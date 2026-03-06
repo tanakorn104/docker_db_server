@@ -12,7 +12,7 @@ services:
     networks:
       - main_shared_network
 
-phpmyadmin:
+  phpmyadmin:
     image: phpmyadmin:latest
     container_name: mysql_ui
     restart: always
@@ -20,7 +20,9 @@ phpmyadmin:
       PMA_HOST: db
       PMA_ABSOLUTE_URI: /pma/ # ใช้ Relative Path เพื่อความยืดหยุ่นเรื่องโดเมน
     networks:
-      - main_shared_networkม่ต้องใส่ ports: เพราะจะให้ Nginx เรียกผ่าน Network ภายใน
+      - main_shared_network #เพราะจะให้ Nginx เรียกผ่าน Network ภายใน
+    env_file:
+      - .env
 
 networks:
   main_shared_network:
