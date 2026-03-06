@@ -7,20 +7,20 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
       - db_storage:/var/lib/mysql
+    ports:
+      - "3306:3306"  # เปิดให้เครื่อง Windows/เพื่อน มุดมาต่อ SQL ตรงๆ
     networks:
       - main_shared_network
 
-  phpmyadmin:
+phpmyadmin:
     image: phpmyadmin:latest
     container_name: mysql_ui
     restart: always
     environment:
       PMA_HOST: db
-      # ตัวแปรสำคัญเพื่อให้เข้าผ่าน /pma ได้ถูกต้อง
-      PMA_ABSOLUTE_URI: http://localhost/pma/
+      PMA_ABSOLUTE_URI: /pma/ # ใช้ Relative Path เพื่อความยืดหยุ่นเรื่องโดเมน
     networks:
-      - main_shared_network
-    # ไม่ต้องเปิด ports ออกข้างนอก เพราะจะให้ Nginx ในโปรเจกต์เว็บเป็นคนเรียก
+      - main_shared_networkม่ต้องใส่ ports: เพราะจะให้ Nginx เรียกผ่าน Network ภายใน
 
 networks:
   main_shared_network:
