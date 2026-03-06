@@ -1,30 +1,30 @@
 services:
-  # --- ตัวเครื่องยนต์ฐานข้อมูล ---
   db:
     image: mysql:8.0
     container_name: mysql_server
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-    ports:
-      - "3307:3306" # เปิดให้โปรแกรมข้างนอก (เช่น Python) ต่อเข้ามาได้
     volumes:
-      - db_storage:/var/lib/mysql           # เก็บข้อมูลลง Hard drive เครื่อง
-      - ./mysql-init:/docker-entrypoint-initdb.d # สั่งรัน SQL ตอนเริ่มครั้งแรก
+      - db_storage:/var/lib/mysql
+    networks:
+      - main_shared_network
 
-  # --- ตัวหน้าเว็บจัดการ (UI) ---
   phpmyadmin:
     image: phpmyadmin:latest
     container_name: mysql_ui
     restart: always
     environment:
-      PMA_HOST: db    # เชื่อมไปยัง Service ชื่อ 'db' ด้านบน
-      PMA_PORT: 3306
-      UPLOAD_LIMIT: 300M
-    ports:
-      - "8888:80"     # เข้าใช้งานผ่าน http://localhost:8888
-    depends_on:
-      - db            # รอให้ DB รันเสร็จก่อนค่อยเปิด UI
+      PMA_HOST: db
+      # ตัวแปรสำคัญเพื่อให้เข้าผ่าน /pma ได้ถูกต้อง
+      PMA_ABSOLUTE_URI: http://localhost/pma/
+    networks:
+      - main_shared_network
+    # ไม่ต้องเปิด ports ออกข้างนอก เพราะจะให้ Nginx ในโปรเจกต์เว็บเป็นคนเรียก
+
+networks:
+  main_shared_network:
+    external: true
 
 volumes:
-  db_storage:         # จองพื้นที่เก็บข้อมูลถาวร
+  db_storage:
