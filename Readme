@@ -1,0 +1,2 @@
+for Docker Run sql and phpmyAdmin
+must create .end and add DB_ROOT_PASSWORD variable
