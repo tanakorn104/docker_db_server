@@ -1,28 +1,30 @@
+version: '3.8'
+
 services:
   db:
-    image: mysql:8.0
+    image: park104/database_server_docker:mysql
     container_name: mysql_server
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}  # เปลี่ยนเป็นรหัสที่คุณต้องการ
+      MYSQL_DATABASE: teamder_db
     volumes:
       - db_storage:/var/lib/mysql
     ports:
-      - "3306:3306"  # เปิดให้เครื่อง Windows/เพื่อน มุดมาต่อ SQL ตรงๆ
+      - "3306:3306"
     networks:
       - main_shared_network
 
   phpmyadmin:
-    image: phpmyadmin:latest
+    image: park104/database_server_docker:pma
     container_name: mysql_ui
     restart: always
     environment:
       PMA_HOST: db
-      PMA_ABSOLUTE_URI: /pma/ # ใช้ Relative Path เพื่อความยืดหยุ่นเรื่องโดเมน
+      PMA_ABSOLUTE_URI: https://dev.teamder.online/pma/
+      TRUSTED_PROXIES: 0.0.0.0/0
     networks:
-      - main_shared_network #เพราะจะให้ Nginx เรียกผ่าน Network ภายใน
-    env_file:
-      - .env
+      - main_shared_network
 
 networks:
   main_shared_network:
